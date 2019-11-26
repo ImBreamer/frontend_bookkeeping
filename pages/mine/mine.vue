@@ -42,9 +42,11 @@
 				//
 				uni.request({
 					url: this.globel_url + 'user/wx/info',
-					method: 'GET',
+					method: 'POST',
 					data: {
-						jsCode: infoCode
+						jsCode: infoCode,
+						avatarUrl:res.detail.userInfo.avatarUrl,
+						nickName:res.detail.userInfo.nickName
 					},
 					dataType: 'json',
 					success: (res) => {

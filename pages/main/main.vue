@@ -249,11 +249,9 @@
 		min-height: 1000upx;
 		width: 100%;
 		z-index: 99999;
-		background-color: #F0AD4E;
 	}
 
 	.block-demo {
-		background-color: #00BFFF;
 		width: 100%;
 		min-height: 500upx;
 		margin-top: 20upx;
