@@ -29,8 +29,15 @@
 					</view>
 				</view>
 			</view>
-			<view v-if="listData.length < 1" class="block-demo">
-				暂无数据
+			<view v-if="listData.length < 1" class="block-demo-null">
+				<view class="block-item-large">
+					暂无数据
+				</view>
+				
+				<view class="block-item-small">
+					您本月无账本记录，若需要添加请点击下方按钮
+				</view>
+				
 			</view>
 		</view>
 	</view>
@@ -53,22 +60,7 @@
 				selectMonth: '',
 				selectDate: '',
 				isFirstLogin: uni.getStorageSync('isFirstLogin'),
-				listData: [{
-					bookDate: '2019-01-02',
-					keepingBooks: [{
-						bookCoast: "10.20",
-						bookTag: "1",
-						id: 1,
-						remark: "花钱",
-						tagIcon: "/life",
-						tagName: "生活",
-					}],
-					month: "2019-08",
-					monthDate: "10日",
-					sumCoast: "33.20",
-					userId: "1316659983810592",
-					weekDate: "星期六"
-				}],
+				listData: [],
 				deleteOptionName: [{
 					text: '删除'
 				}],
@@ -131,8 +123,16 @@
 						token: token
 					},
 					success: (res) => {
-						console.log(res);
-						this.listData = res.data.data;
+						if (res.data.code == 2000) {
+							this.listData = res.data.data;
+						} else {
+							uni.showModal({
+							    title: '提示',
+							    content: res.data.msg,
+								showCancel:false
+							});
+						}
+						console.log(this.listData);
 					}
 				});
 				// #endif
@@ -150,7 +150,7 @@
 					},
 					success: (res) => {
 						console.log(res);
-						this.listData = res.data.data;
+						this.listData = res.data;
 					}
 				});
 				// #endif
@@ -246,7 +246,7 @@
 
 	.main-body {
 		margin-top: 120upx;
-		min-height: 1000upx;
+		min-height: 800upx;
 		width: 100%;
 		z-index: 99999;
 	}
@@ -256,9 +256,32 @@
 		min-height: 500upx;
 		margin-top: 20upx;
 	}
-
+	
+	.block-demo-null {
+		width: 100%;
+		height: 100%;
+		margin-top: 20upx;
+		vertical-align: middle;
+	}
+	
+	
 	.block-item {
 		background-color: #00CE47;
+		width: 100%;
+	}
+	.block-item-large{
+		margin-top: 45%;
+		text-align: center;
+		font-size: 32upx;
+		color: #CCCCCC;
+		width: 100%;
+	}
+	
+	.block-item-small{
+		margin-top: 5%;
+		text-align: center;
+		font-size: 28upx;
+		color: #CCCCCC;
 		width: 100%;
 	}
 
