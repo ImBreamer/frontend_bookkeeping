@@ -56,42 +56,8 @@
 		},
 		methods: {
 			getUserInfo: function(res) {
-				// if (!res.detail.iv) {
-				// 	uni.showToast({
-				// 		title: "您取消了授权,登录失败",
-				// 		icon: "none"
-				// 	});
-				// 	return false;
-				// }
 				console.log(res.detail);
-				uni.request({
-					url: this.globel_url + 'user/wx/info',
-					method: 'POST',
-					data: {
-						jsCode: infoCode,
-						avatarUrl: res.detail.userInfo.avatarUrl,
-						nickName: res.detail.userInfo.nickName
-					},
-					dataType: 'json',
-					success: (obj) => {
-						console.log(obj.data);
-						var resData = obj.data;
-						if (resData.code == 2000) {
-							uni.setStorageSync('isFirstLogin', false);
-							uni.setStorageSync("token", resData.data.token);
-							this.user_info.userId = resData.data.userId;
-							this.user_info.nickName = res.detail.userInfo.nickName;
-							this.user_info.face = res.detail.userInfo.avatarUrl;
-							this.user_info.openId = resData.data.openid;
-							uni.reLaunch({
-								url: '../main/main',
-							});
-						} else {
-							this.errorMsg = resData.msg;
-							this.show = true;
-						}
-					}
-				});
+				this.$login(infoCode,res.detail);
 			},
 			cancel() {
 				this.show = false;

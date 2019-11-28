@@ -1,8 +1,10 @@
 <template>
-	<view class="content">
-		<!-- #ifdef MP-WEIXIN -->
-		<button class="" open-type="getUserInfo" @getuserinfo="getUserInfo" withCredentials="true">授权登录</button>
-		<!-- #endif -->
+	<view>
+		<view class="mine-header">
+			<image :src="faceImage"></image>
+		</view>
+		<view class="mine-middle"></view>
+		<view class="mine-bottom"></view>
 	</view>
 </template>
 
@@ -11,77 +13,34 @@
 	export default {
 		data() {
 			return {
-				title: 'Hello'
+				title: 'Hello',
+				faceImage: '',
 			}
 		},
 		onLoad() {
-			// #ifdef MP-WEIXIN
-			uni.login({
-				provider:'weixin',
-				success:function(res){
-					console.log(res);
-					infoCode = res.code;
-				}
-			})
-			console.log(this.globel_url);
-			this.user_info.nickName = 'breamer';
-			// #endif
-			
+			if(this.user_info.openId == null){
+				uni.reLaunch({
+					url: '../login/login'
+				});
+			}else{
+				this.faceImage = this.user_info.avatarUrl;
+			}
 
 		},
 		methods: {
-			getUserInfo: function(res) {
-				if (!res.detail.iv) {
-					uni.showToast({
-						title: "您取消了授权,登录失败",
-						icon: "none"
-					});
-					return false;
-				}
-				console.log(res.detail);
-				//
-				uni.request({
-					url: this.globel_url + 'user/wx/info',
-					method: 'POST',
-					data: {
-						jsCode: infoCode,
-						avatarUrl:res.detail.userInfo.avatarUrl,
-						nickName:res.detail.userInfo.nickName
-					},
-					dataType: 'json',
-					success: (res) => {
-						console.log(res);
-					}
-				});
-			}
+			
 		}
 	}
 </script>
 
 <style>
-	.content {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
+	.mine-header {
 	}
 
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
+	.mine-middle {
 	}
 
-	.text-area {
-		display: flex;
-		justify-content: center;
+	.mine-bottom {
 	}
 
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
 </style>

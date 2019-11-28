@@ -33,11 +33,11 @@
 				<view class="block-item-large">
 					暂无数据
 				</view>
-				
+
 				<view class="block-item-small">
 					您本月无账本记录，若需要添加请点击下方按钮
 				</view>
-				
+
 			</view>
 		</view>
 	</view>
@@ -70,15 +70,17 @@
 		},
 		onLoad() {
 			// uni.clearStorageSync();
+			const _self = this;
 			let date = new Date();
 			let year = date.getFullYear();
 			let month = date.getMonth() + 1;
 			let day = date.getDate();
 			let paramMonth = month < 10 ? "0" + month : month
-			this.selectYear = year;
-			this.selectMonth = month;
-			this.selectDate = `${year}-${paramMonth}`;
-			console.log(this.selectDate)
+			_self.selectYear = year;
+			_self.selectMonth = month;
+			_self.selectDate = `${year}-${paramMonth}`;
+			console.log(_self.selectDate)
+
 
 			if (uni.getStorageSync('isFirstLogin') === '') {
 				this.isFirstLogin = true;
@@ -98,7 +100,32 @@
 					}
 				});
 			} else {
-				this.getBookKeepingData(this.selectDate);
+				if (this.user_info.openId == null) {
+					// #ifdef MP-WEIXIN
+					uni.login({
+						provider: 'weixin',
+						success: function(resLogin) {
+							console.log(resLogin);
+							uni.getUserInfo({
+								provider: 'weixin',
+								lang: 'zh_CN',
+								withCredentials: 'true',
+								success: function(resUserInfo) {
+									console.log(resUserInfo);
+									_self.getUserInfo(resLogin.code, resUserInfo);
+								}
+							})
+						}
+					})
+					console.log(this.globel_url);
+					this.user_info.nickName = 'breamer';
+
+
+					// #endif
+				} 
+
+
+				_self.getBookKeepingData(_self.selectDate);
 			}
 
 		},
@@ -108,6 +135,9 @@
 		methods: {
 			bindClick(e) {
 				console.log(e);
+			},
+			getUserInfo(code,info){
+				this.$login(code, info);
 			},
 			getBookKeepingData(month) {
 				token = uni.getStorageSync("token")
@@ -127,9 +157,9 @@
 							this.listData = res.data.data;
 						} else {
 							uni.showModal({
-							    title: '提示',
-							    content: res.data.msg,
-								showCancel:false
+								title: '提示',
+								content: res.data.msg,
+								showCancel: false
 							});
 						}
 						console.log(this.listData);
@@ -256,28 +286,29 @@
 		min-height: 500upx;
 		margin-top: 20upx;
 	}
-	
+
 	.block-demo-null {
 		width: 100%;
 		height: 100%;
 		margin-top: 20upx;
 		vertical-align: middle;
 	}
-	
-	
+
+
 	.block-item {
 		background-color: #00CE47;
 		width: 100%;
 	}
-	.block-item-large{
+
+	.block-item-large {
 		margin-top: 45%;
 		text-align: center;
 		font-size: 32upx;
 		color: #CCCCCC;
 		width: 100%;
 	}
-	
-	.block-item-small{
+
+	.block-item-small {
 		margin-top: 5%;
 		text-align: center;
 		font-size: 28upx;
